@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Trinkspiele 🍻</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .question-display {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin: 30px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .question-display:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .category-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 50px;
+            padding: 20px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-btn:nth-child(2) {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .category-btn:nth-child(3) {
+            background: linear-gradient(45deg, #a8edea, #fed6e3);
+            color: #333;
+        }
+
+        .category-btn:nth-child(4) {
+            background: linear-gradient(45deg, #ffecd2, #fcb69f);
+            color: #333;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .category-btn:active {
+            transform: translateY(1px);
+        }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .category-btn:hover::before {
+            left: 100%;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question-display {
+                font-size: 1.2rem;
+                padding: 30px 20px;
+                min-height: 150px;
+            }
+            
+            .category-btn {
+                font-size: 1rem;
+                padding: 15px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .question-display {
+                font-size: 1rem;
+                padding: 25px 15px;
+                min-height: 120px;
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: white;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #ccc;
+        }
+
+        .input-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #playerName {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #playerNames {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+
+        .generate-btn, .reset-btn, .next-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin: 10px;
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .generate-btn:hover, .reset-btn:hover, .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .next-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .statements-display h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .statements-list {
+            margin: 25px 0;
+        }
+
+        .statement {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .statement:nth-child(1) { animation-delay: 0.1s; }
+        .statement:nth-child(2) { animation-delay: 0.2s; }
+        .statement:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .voting-section, .reveal-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .vote-buttons, .reveal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .vote-btn, .reveal-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .reveal-btn {
+            background: linear-gradient(45deg, #ffecd2, #fcb69f);
+            color: #333;
+        }
+
+        .vote-btn:hover, .reveal-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .vote-btn.selected, .reveal-btn.selected {
+            transform: scale(1.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .vote-result, .game-result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .vote-result {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .game-result {
+            font-size: 1.5rem;
+            animation: bounce 1s ease-out;
+        }
+
+        .game-result.win {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+        }
+
+        .game-result.lose {
+            background: rgba(244, 67, 54, 0.8);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍻 Party Trinkspiele 🎉</h1>
+        
+        <div class="question-display" id="questionDisplay">
+            Wähle eine Kategorie und lass die Party beginnen! 🎊
+        </div>
+        
+        <div class="category-buttons">
+            <button class="category-btn" onclick="getQuestion('wahrheit')">
+                <span class="emoji">🤔</span>Wahrheit oder Pflicht
+            </button>
+            <button class="category-btn" onclick="getQuestion('wuerdest-du')">
+                <span class="emoji">🤷‍♂️</span>Was würdest du eher...
+            </button>
+            <button class="category-btn" onclick="getQuestion('ich-hab-nie')">
+                <span class="emoji">🙈</span>Ich hab noch nie...
+            </button>
+            <button class="category-btn" onclick="showStatements()">
+                <span class="emoji">🎯</span>3 Aussagen über dich
+            </button>
+        </div>
+        
+        <!-- Modal für 3 Aussagen Spiel -->
+        <div class="modal" id="statementsModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>🎯 3 Aussagen über dich</h2>
+                
+                <div class="statements-game" id="statementsGame">
+                    <div class="input-section">
+                        <p><strong>Namen der Spieler eingeben (getrennt durch Komma):</strong></p>
+                        <textarea id="playerNames" placeholder="z.B. Anna, Max, Lisa, Tom..." rows="3" maxlength="200"></textarea>
+                        <button onclick="startStatementsGame()" class="generate-btn">Spiel starten</button>
+                    </div>
+                    
+                    <div class="statements-display" id="statementsDisplay" style="display: none;">
+                        <h3 id="playerTitle"></h3>
+                        <div class="statements-list">
+                            <div class="statement" id="statement1"></div>
+                            <div class="statement" id="statement2"></div>
+                            <div class="statement" id="statement3"></div>
+                        </div>
+                        
+                        <div class="next-section">
+                            <button onclick="generateNextStatements()" class="next-btn">Nächste Person</button>
+                            <button onclick="resetStatementsGame()" class="reset-btn">Neues Spiel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🎮 Trinkt verantwortungsbewusst! 🎮</p>
+            <p>Für Erwachsene ab 18 Jahren</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            wahrheit: [
+                "Was war das Peinlichste, das dir je passiert ist?",
+                "Hattest du schon mal einen One-Night-Stand?",
+                "Wie oft denkst du an Sex?",
+                "Wen aus der Runde findest du am heißesten?",
+                "Mit wem aus der Runde würdest du am ehesten eine Beziehung eingehen?",
+                "Mit wem würdest du am ehesten rummachen – rein optisch?",
+                "Hattest du schon mal Sex an einem ungewöhnlichen Ort?",
+                "Was war dein schlechtester Kuss?",
+                "Hast du schon mal einen Orgasmus vorgetäuscht?",
+                "Was würdest du tun, wenn du einen Tag lang das andere Geschlecht wärst?",
+                "Hattest du schon mal einen Sextraum über jemanden hier in der Runde?",
+                "Mit wem in der Runde würdest du am ehesten einen Dreier ausprobieren?",
+                "Welche Sexstellung magst du am meisten?",
+                "Was ist dein schmutzigstes Geheimnis?",
+                "Wie war dein erstes Mal wirklich?",
+                "Wie viele Menschen hast du schon geküsst?",
+                "Mit wem aus der Runde würdest du am ehesten eine Nacht verbringen – ohne Verpflichtung?",
+                "Was war das Unanständigste, das du je getan hast?",
+                "Hast du schon mal Nacktbilder verschickt?",
+                "Mit wem würdest du am liebsten für eine Woche auf einer einsamen Insel sein?",
+                "Hast du schon mal jemanden in der Runde angelogen?",
+                "Wen in der Runde würdest du am ehesten heiraten – wenn du müsstest?",
+                "Wer aus der Runde würde dich deiner Meinung nach am besten küssen?",
+                "Wer in der Runde hat die heißeste Ausstrahlung?",
+                "Hast du schon mal beim Sex an jemand anderen gedacht?",
+                "Wer war dein bester Kuss bisher?",
+                "Welche Körperstelle findest du an dir selbst am unattraktivsten?",
+                "Welcher Fetisch reizt dich am meisten?",
+                "Hast du ein Geheimnis, das niemand aus der Runde kennt?",
+                "Was war dein schlimmster Korb?",
+                "Mit wem aus der Runde würdest du am ehesten zusammenziehen?",
+                "Bist du eher dominant oder devot?",
+                "Wie oft schaust du Pornos?",
+                "Welche Art von Pornos schaust du am liebsten?",
+                "Hast du schon mal deinen Ex gestalkt?",
+                "Was war dein schlimmstes Date?",
+                "Wie viele Personen hast du sexuell gesehen?",
+                "Was ist deine wildeste Fantasie?",
+                "Mit wem aus der Runde würdest du lieber kuscheln – wenn du wählen müsstest?",
+                "Was turnt dich sofort ab?",
+                "Was macht dich beim Küssen richtig an?",
+                "Hast du schon mal jemanden eifersüchtig gemacht – mit Absicht?",
+                "Was war der größte Liebesfehler, den du je gemacht hast?",
+                "Hast du schon mal in einer Beziehung betrogen?",
+                "Hast du schon mal jemanden benutzt?",
+                "Welche Person aus deinem Leben würdest du gerne zurückhaben?",
+                "Welcher Mensch hat dein Herz am meisten gebrochen?",
+                "Was war dein schlimmster Rausch?",
+                "Was bereust du, nie getan zu haben?",
+                "Mit wem aus der Runde würdest du am ehesten ein Geheimnis teilen?",
+                "Wer in der Runde könnte dein perfekter Flirtpartner sein?",
+                "Was war dein längster Kuss?",
+                "Hast du schon mal beim Sex gelacht?",
+                "Wen in der Runde würdest du deiner Mutter vorstellen?",
+                "Hast du schon mal Sex mit jemandem gehabt, dessen Namen du nicht mehr weißt?",
+                "Was ist dein Lieblingskörperspieltipp?",
+                "Würdest du mit jemandem für Geld schlafen?",
+                "Was war das Gemeinste, das du je zu jemandem gesagt hast?",
+                "Was ist dein peinlichster Suchverlauf?",
+                "Was wäre dir am peinlichsten, wenn es jemand hier erfahren würde?",
+                "Was ist dein Guilty Pleasure?",
+                "Welche Apps benutzt du heimlich?",
+                "Was denkst du über offene Beziehungen?",
+                "Was war dein letzter Sextraum?",
+                "Wen in der Runde würdest du als Wingman/-woman wählen?",
+                "Welches Geheimnis würdest du niemals freiwillig verraten?",
+                "Hast du schon mal beim Sex geweint?",
+                "Wen in der Runde findest du überraschend sexy?",
+                "Was würdest du lieber verstecken – dein Tagebuch oder deinen Browserverlauf?",
+                "Wie oft denkst du an deine*n Ex?",
+                "Was macht dich richtig eifersüchtig?",
+                "Hast du schon mal jemanden nur aus Rache geküsst?",
+                "Was ist dein schlimmster Beziehungsmove?",
+                "Was ist deine größte Unsicherheit?",
+                "Wen in der Runde würdest du am ehesten verführen?",
+                "Was war dein peinlichstes Erlebnis im Bett?",
+                "Was würdest du niemals über dich erzählen – aber jetzt bitte trotzdem!",
+                "Hattest du schon mal einen Dreier?",
+                "Welchen Ort würdest du am liebsten nackt besuchen – wenn du müsstest?",
+                "Wen in der Runde würdest du gerne mal nackt sehen?",
+                "Was ist dein schmutzigstes Erlebnis?",
+                "Was war dein letzter Liebeskummer?",
+                "Was würdest du an deinem Körper ändern?",
+                "Wen in der Runde würdest du gerne mal küssen – heimlich?",
+                "Was war dein letzter Flirt?",
+                "Mit wem hattest du den schlechtesten Sex?",
+                "Wer in der Runde hat deiner Meinung nach die besten Chancen im Bett?",
+                "Was würdest du mit 24 Stunden ohne Konsequenzen tun?",
+                "Hast du dir schon mal vorgestellt, wie Sex mit jemandem in dieser Runde wäre?",
+                "Was würdest du tun, wenn du für eine Nacht unsichtbar wärst?",
+                "Wen in der Runde würdest du lieber daten als Freund*in haben?",
+                "Was ist dein peinlichster Spitzname?",
+                "Was war dein schlimmster Sexting-Fail?",
+                "Was ist deine geheimste Vorliebe?",
+                "Was würdest du deinem Ex gerne ins Gesicht sagen?",
+                "Wen in der Runde würdest du auf eine geheime Mission mitnehmen?",
+                "Was war das Romantischste, das du je getan hast?",
+                "Hattest du schon mal eine Fernbeziehung?",
+                "Was ist dein Lieblingskusspunkt?",
+                "Wie viele Personen waren bei dir mehr als nur ein Flirt?",
+                "Was ist deine peinlichste Erinnerung an die Schule?",
+                "Wer in der Runde sieht so aus, als hätte er/sie wilde Geheimnisse?",
+                "Was war der größte Liebesfail deiner Jugend?",
+                "Hast du schon mal jemandem den Kopf verdreht und es ausgenutzt?",
+                "Mit wem aus der Runde würdest du am ehesten ein Tattoo stechen lassen?",
+                "Wie sieht dein Traum-Date aus?",
+                "Welches Emoji beschreibt dein Sexleben?",
+                "Was ist deine Lieblingsausrede, um jemanden abzuweisen?",
+                "Was war das Dümmste, das du jemals aus Liebe getan hast?",
+                "Mit wem in der Runde würdest du gemeinsam nackt baden gehen?",
+                "Was war dein verrücktester Flirt?",
+                "Hast du dich schon mal in jemanden aus der Freundesgruppe verliebt?",
+                "Wen würdest du wählen, wenn du mit jemandem auswandern müsstest?",
+                "Was würdest du tun, wenn du 5 Minuten lang Gedanken lesen könntest?",
+                "Was war das größte Missverständnis über dein Liebesleben?",
+                "Was ist der verrückteste Ort, an dem du je Sex hattest?",
+                "Was ist deine größte Schwäche im Umgang mit dem anderen Geschlecht?",
+                "Wen aus der Runde würdest du eher als Crush bezeichnen als als Freund?",
+                "Wer in der Runde flirtet deiner Meinung nach am besten?",
+                "Was würdest du tun, wenn du für 24 Stunden ein Promi wärst?",
+                "Was ist deine Lieblingsstellung – und warum?",
+                "Welcher Song beschreibt deine letzte Beziehung?",
+                "Wer wäre dein absoluter No-Go-Partner in der Runde?",
+                "Mit wem würdest du nie im Leben schlafen – selbst für Geld?",
+                "Was würdest du heute noch tun, wenn du garantiert nicht erwischt wirst?",
+                "Welchen Satz bereust du jemals gesagt zu haben?",
+                "Was war dein wildestes Wochenende?",
+                "Mit wem würdest du aus der Runde eine Nacht im Zelt verbringen – nackt?",
+                "Wer in der Runde hat den besten Style?",
+                "Was ist deine geheimste sexuelle Fantasie?",
+                "Wen würdest du am liebsten besoffen küssen?",
+                "Welches Körperteil würdest du gerne \"verbessern\", wenn du könntest?",
+                "Welche Sexpraktik willst du unbedingt mal ausprobieren?",
+                "Was würdest du tun, wenn dein/e Crush plötzlich Single ist?",
+                "Wen würdest du um Rat fragen bei einem Liebesproblem?",
+                "Was war dein peinlichster Morgen danach?",
+                "Hast du schon mal jemanden eiskalt ignoriert?",
+                "Was war dein letzter Crush und warum?",
+                "Wer war deine erste große Liebe?",
+                "Hattest du schon mal einen geheimen Lover?",
+                "Hast du schon mal bei jemandem heimlich übernachtet?",
+                "Wer in der Runde passt am besten zu dir – optisch UND charakterlich?",
+                "Was macht dich beim Sex nervös?",
+                "Was ist deine größte Angst in Sachen Beziehung?",
+                "Was war dein heftigster Streit?",
+                "Was war dein peinlichstes Kindheits-Erlebnis?",
+                "Hast du schon mal so getan, als würdest du jemanden mögen, obwohl du ihn nicht ausstehen konntest?",
+                "Welcher Film hat dich zuletzt zum Weinen gebracht?",
+                "Was war deine schlechteste Schulnote – und warum?",
+                "Wenn du einen Tag jemand anderes sein könntest – wer wärst du?",
+                "Hast du schon mal einen richtig dummen Lügen-Ausrede benutzt? Welche?",
+                "Was ist das Unnötigste, für das du jemals Geld ausgegeben hast?",
+                "Was ist deine größte Macke?",
+                "Welche App nutzt du am meisten – und schämst dich vielleicht ein bisschen dafür?",
+                "Was war das letzte YouTube-Video, das du angeschaut hast?",
+                "Hast du schon mal aus Versehen jemanden beleidigt?",
+                "Was war das größte Missgeschick beim Kochen oder Backen?",
+                "Welches Geräusch nervt dich am meisten?",
+                "Welchen Promi findest du total überbewertet?",
+                "Was ist dein seltsamstes Hobby oder Interesse?",
+                "Was hast du als Kind gesammelt?",
+                "Hast du mal einen super peinlichen Anruf getätigt oder bekommen?",
+                "Wofür hast du dich mal richtig blamiert – in der Schule, Arbeit oder Uni?",
+                "Was war dein schlimmster Frisuren-Fail?",
+                "Welches Lied kannst du auswendig, obwohl du es nicht mal magst?",
+                "Hast du mal ein Geschenk geschenkt, das du selbst geschenkt bekommen hast?",
+                "Hast du mal eine wichtige Deadline verschwitzt?",
+                "Was ist dein größter Ordnungs-Fail zuhause?",
+                "Hast du mal so getan, als wärst du krank, um etwas zu vermeiden?",
+                "Was war das Teuerste, das du je kaputtgemacht hast?",
+                "Womit kann man dich richtig auf die Palme bringen?",
+                "Was ist das Dümmste, das du je aus Trotz getan hast?",
+                "Hattest du schon mal eine richtig peinliche Autokorrektur-Panne?",
+                "Was war das Verrückteste, das du jemals spontan getan hast?",
+                "Hast du mal eine Ausrede erfunden, um nicht auf eine Party zu gehen?",
+                "Was ist das Lustigste, das dir beim Sport passiert ist?",
+                "Was kannst du absolut nicht, obwohl es alle anderen können?",
+                "Was war der größte Streit, den du mal hattest – und worum ging's?",
+                "Hast du schon mal ein Geheimnis ausgeplaudert, ohne es zu merken?",
+                "Gibt es einen Trend, dem du heute peinlich hinterhergelaufen bist?",
+                "Welches Fach in der Schule war dein absoluter Albtraum?",
+                "Welche Angewohnheit findest du an dir selbst manchmal nervig?",
+                "Was ist das Peinlichste, das du jemals auf Social Media gepostet hast?",
+                "Was hast du als Kind gedacht, was total falsch war?",
+                "Was war dein bisher schlimmster Urlaub?",
+                "Was ist deine irrationalste Angst?",
+                "Was hast du mal gekocht, das total schief ging?",
+                "Was war der witzigste Moment bei einem Familienfest?",
+                "Hast du mal jemandem etwas geglaubt, das sich als kompletter Quatsch entpuppt hat?",
+                "Welchen Job würdest du nie im Leben machen wollen?",
+                "Was ist das Seltsamste, das du in der Öffentlichkeit gesehen hast?",
+                "Welche Gewohnheit hast du, die andere oft seltsam finden?",
+                "Hast du schon mal etwas Wichtiges vergessen – z. B. Geburtstag, Termin, Prüfung?",
+                "Was ist dein peinlichstes Missgeschick in einem Zoom-/Video-Call gewesen?",
+                "Was würdest du tun, wenn du plötzlich 1 Million Euro finden würdest – aber keiner weiß, woher?"
+            ],
+            
+            "wuerdest-du": [
+                "Würdest du eher niemals wieder duschen oder niemals wieder deine Zähne putzen?",
+                "Würdest du eher fliegen können oder unsichtbar sein?",
+                "Würdest du eher immer zu spät oder immer eine Stunde zu früh sein?",
+                "Würdest du eher deine Träume aufgeben oder deine Familie verlieren?",
+                "Würdest du eher reich und ungeliebt oder arm und geliebt sein?",
+                "Würdest du eher Gedanken lesen oder in die Zukunft sehen können?",
+                "Würdest du eher nur noch Whiskey oder nur noch Bier trinken?",
+                "Würdest du eher ein Jahr im Gefängnis oder zehn Jahre nicht trinken?",
+                "Würdest du eher immer lügen oder niemals sprechen können?",
+                "Würdest du eher dein Handy oder dein Auto verlieren?",
+                "Würdest du eher ohne Musik oder ohne Filme leben?",
+                "Würdest du eher immer verschwitzt oder immer frieren?",
+                "Würdest du eher deine Jugend oder dein Geld zurückbekommen?",
+                "Würdest du eher 10 Jahre älter oder 5 Jahre jünger sein?",
+                "Würdest du eher nie wieder Pizza oder nie wieder Schokolade essen?",
+                "Würdest du eher immer schreien oder nur flüstern können?",
+                "Würdest du eher 100 Jahre leben, aber arm sein oder 50 Jahre, aber reich?",
+                "Würdest du eher deine Erinnerungen oder deine Träume verlieren?",
+                "Würdest du eher immer Wahrheit sagen oder nie wieder sprechen?",
+                "Würdest du eher berühmt, aber gehasst oder unbekannt, aber geliebt sein?",
+                "Würdest du eher Sex mit deinem Ex oder nie wieder Sex?",
+                "Würdest du eher einen Monat ohne Unterwäsche oder ohne Zähne leben?",
+                "Würdest du eher deinen Crush küssen oder von ihm/ihr geküsst werden?",
+                "Würdest du eher Sex in der Öffentlichkeit oder im Bett deiner Eltern?",
+                "Würdest du eher deinen Chef nackt sehen oder von deinem Chef nackt gesehen werden?",
+                "Würdest du eher nie wieder Alkohol oder nie wieder Kaffee trinken?",
+                "Würdest du eher immer den gleichen Song hören oder nie wieder Musik?",
+                "Würdest du eher für immer Single oder in einer chaotischen Beziehung?",
+                "Würdest du eher mit jemandem schlafen, den du nicht magst oder nie wieder jemanden anfassen?",
+                "Würdest du eher nackt auf einer Party auftauchen oder bei einem Vorstellungsgespräch?",
+                "Würdest du eher deine Freunde beim Sex hören oder sie dich hören lassen?",
+                "Würdest du eher jede Woche jemand Neues oder ein Leben lang nur eine Person?",
+                "Würdest du eher einen Dreier oder gar keinen Sex mehr?",
+                "Würdest du eher beim Sex weinen oder lachen müssen?",
+                "Würdest du eher niemals kommen können oder immer zu früh?",
+                "Würdest du eher auf einem Einhorn reiten oder mit einem Drachen fliegen?",
+                "Würdest du eher mit einem Zombie zusammenleben oder mit einem Vampir?",
+                "Würdest du eher in einem Disney-Film leben oder in einem Actionfilm?",
+                "Würdest du eher für immer Kind bleiben oder sofort 70 sein?",
+                "Würdest du eher einen Monat kein Handy oder einen Monat keine Freunde?",
+                "Würdest du eher dein Leben filmen lassen oder die Kontrolle über dein Handy abgeben?",
+                "Würdest du eher immer die Wahrheit hören oder nie wieder was erfahren?",
+                "Würdest du eher nie wieder Sport oder nie wieder Süßes?",
+                "Würdest du eher deine Eltern beim Sex erwischen oder sie dich?",
+                "Würdest du eher jeden Tag nackt aufwachen oder jeden Tag betrunken?",
+                "Würdest du eher dich jeden Tag neu verlieben oder nie wieder verliebt sein?",
+                "Würdest du eher mit jemandem schlafen, der schnarcht oder der beim Sex redet wie beim Bewerbungsgespräch?",
+                "Würdest du eher mit jemandem schlafen, der nach Knoblauch riecht oder nach Schweiß?",
+                "Würdest du eher allein feiern oder mit der falschen Person?",
+                "Würdest du eher mit jemandem schlafen, den du hasst oder den du liebst, der dich aber hasst?",
+                "Würdest du eher jeden Tag eine Beichte ablegen oder jeden Tag jemandem die Wahrheit sagen?",
+                "Würdest du eher nie wieder lügen oder nie wieder flirten?",
+                "Würdest du eher bei jeder Berührung kichern oder bei jeder Umarmung weinen?",
+                "Würdest du eher immer ohne Socken oder immer ohne Hose?",
+                "Würdest du eher eine Woche im Dschungel oder eine Woche in einem Büro ohne Fenster?",
+                "Würdest du eher alleine auf Weltreise oder nie deine Stadt verlassen?",
+                "Würdest du eher deinen besten Freund küssen oder deinen schlimmsten Feind umarmen?",
+                "Würdest du eher niemals mehr schlafen oder niemals mehr essen können?",
+                "Würdest du eher ein Einhorn als Haustier oder einen sprechenden Hamster?",
+                "Würdest du eher jede Nachricht laut vorlesen oder nie wieder privat schreiben?",
+                "Würdest du eher jemanden daten, der super sexy, aber dumm ist oder super klug, aber unattraktiv?",
+                "Würdest du eher nackt auf Instagram landen oder mit peinlichem Outfit auf der Titelseite?",
+                "Würdest du eher mit deinem Ex eingeschneit sein oder mit deiner Schwiegermutter?",
+                "Würdest du eher dein Haustier verstehen können oder es soll dich verstehen?",
+                "Würdest du eher mit jemandem zusammen sein, der nie duscht oder nie redet?",
+                "Würdest du eher nie wieder lachen oder nie wieder küssen?",
+                "Würdest du eher eine Woche nichts sagen dürfen oder eine Woche nicht hören können?",
+                "Würdest du eher deine Gedanken laut denken oder nie wieder denken können?",
+                "Würdest du eher dich jeden Tag neu erfinden oder jeden Tag gleich leben?",
+                "Würdest du eher niemals mehr neue Leute kennenlernen oder ständig neue Menschen?",
+                "Würdest du eher jeden Tag die gleiche Mahlzeit oder nie zweimal dasselbe?",
+                "Würdest du eher bei jeder Lüge niesen oder bei jeder Wahrheit pupsen?",
+                "Würdest du eher immer barfuß oder immer in High Heels?",
+                "Würdest du eher dein Leben lang betrunken oder dein Leben lang nüchtern, aber langweilig?",
+                "Würdest du eher im Schlaf reden oder im Schlaf singen?",
+                "Würdest du eher jeden Tag eine neue Sprache sprechen oder keine mehr?",
+                "Würdest du eher alles wissen oder nichts mehr vergessen können?",
+                "Würdest du eher alle Tiere verstehen oder mit Pflanzen sprechen?",
+                "Würdest du eher nie wieder Geburtstag feiern oder nie wieder Weihnachten?",
+                "Würdest du eher immer die Kontrolle verlieren oder nie mehr Spaß haben?",
+                "Würdest du eher eine Woche schweigen oder eine Woche schreien?",
+                "Würdest du eher den peinlichsten Moment deines Lebens wiederholen oder dein schönstes vergessen?",
+                "Würdest du eher nie wieder telefonieren oder nie wieder schreiben?",
+                "Würdest du eher alle Gedanken lesen können oder alle Emotionen spüren?",
+                "Würdest du eher nie wieder Urlaub oder nie wieder Wochenende?",
+                "Würdest du eher jeden Tag feiern oder nie wieder ausgehen dürfen?",
+                "Würdest du eher immer mit vollem Akku oder immer mit vollem Bauch?",
+                "Würdest du eher deinen Lieblingssong nie wieder hören oder nur noch ihn hören?",
+                "Würdest du eher ein berühmter Star oder ein anonymer Genießer sein?",
+                "Würdest du eher auf einer Bühne nackt tanzen oder deine peinlichsten Bilder zeigen?",
+                "Würdest du eher niemals mehr rot werden oder immer rot bleiben?",
+                "Würdest du eher nur noch singen oder nur noch tanzen dürfen?",
+                "Würdest du eher in einem Märchen leben oder in einem Science-Fiction-Film?",
+                "Würdest du eher nie wieder Nachrichten lesen oder nie wieder Serien schauen?",
+                "Würdest du eher dein Leben in einem Film sehen oder dein Leben live kommentiert bekommen?",
+                "Würdest du eher in einer TV-Show mitmachen oder ein Buch über dich veröffentlichen lassen?",
+                "Würdest du eher einen Tag lang jemand anderes sein oder nie wieder du selbst?",
+                "Würdest du eher mit deinem Crush einschlafen oder mit deinem besten Freund aufwachen?",
+                "Würdest du eher nur noch rückwärts gehen oder rückwärts sprechen?",
+                "Würdest du eher dich selbst daten oder dich selbst blockieren?"
+            ],
+            
+            "ich-hab-nie": [
+                "Ich hab noch nie... in der Öffentlichkeit getanzt.",
+                "Ich hab noch nie... eine ganze Nacht durchgemacht.",
+                "Ich hab noch nie... jemanden geküsst, den ich gerade erst kennengelernt habe.",
+                "Ich hab noch nie... einen Filmabend alleine gemacht.",
+                "Ich hab noch nie... gelogen, um nicht arbeiten zu müssen.",
+                "Ich hab noch nie... betrunken gekocht.",
+                "Ich hab noch nie... jemanden aus Versehen mit dem falschen Namen angesprochen.",
+                "Ich hab noch nie... heimlich Essen geklaut.",
+                "Ich hab noch nie... in einem Pool gepinkelt.",
+                "Ich hab noch nie... eine Nachricht an die falsche Person gesendet.",
+                "Ich hab noch nie... so getan, als würde ich schlafen, um nicht gestört zu werden.",
+                "Ich hab noch nie... jemanden auf Social Media entfolgt, weil er nervig war.",
+                "Ich hab noch nie... Karaoke gesungen.",
+                "Ich hab noch nie... eine Dating-App benutzt.",
+                "Ich hab noch nie... meine Eltern angelogen, wo ich war.",
+                "Ich hab noch nie... Fast Food zum Frühstück gegessen.",
+                "Ich hab noch nie... jemanden absichtlich ignoriert.",
+                "Ich hab noch nie... alleine ins Kino gegangen.",
+                "Ich hab noch nie... mehr als 100€ auf einmal ausgegeben.",
+                "Ich hab noch nie... vor Mitternacht eine Party verlassen.",
+                "Ich hab noch nie... einen Orgasmus vorgetäuscht.",
+                "Ich hab noch nie... einen One-Night-Stand gehabt.",
+                "Ich hab noch nie... Sex an einem ungewöhnlichen Ort gehabt.",
+                "Ich hab noch nie... nackt geschlafen – mit jemandem neben mir.",
+                "Ich hab noch nie... jemanden nackt gesehen, ohne dass er/sie es wusste.",
+                "Ich hab noch nie... beim Sex an jemand anderen gedacht.",
+                "Ich hab noch nie... intime Fotos verschickt.",
+                "Ich hab noch nie... mich selbst beim Sex aufgenommen.",
+                "Ich hab noch nie... mich selbst befriedigt, während jemand im Raum war.",
+                "Ich hab noch nie... Sex mit jemandem gehabt, dessen Namen ich nicht mehr wusste.",
+                "Ich hab noch nie... während des Sex lachen müssen.",
+                "Ich hab noch nie... meinem*meiner Ex nochmal geschrieben, obwohl ich wusste, dass es dumm ist.",
+                "Ich hab noch nie... jemanden verführt, nur um Bestätigung zu bekommen.",
+                "Ich hab noch nie... eine Fantasie nie ausgesprochen, obwohl ich sie gern ausprobieren würde.",
+                "Ich hab noch nie... während eines Online-Meetings etwas Unanständiges getan.",
+                "Ich hab noch nie... Sex im Auto gehabt.",
+                "Ich hab noch nie... jemanden nur wegen seines*ihres Aussehens gedatet.",
+                "Ich hab noch nie... jemandem beim Sex zugehört – und es genossen.",
+                "Ich hab noch nie... beim Sex erwischt worden.",
+                "Ich hab noch nie... jemanden aus der Freundesgruppe geküsst.",
+                "Ich hab noch nie... mich in einen Sexpartner*in verliebt.",
+                "Ich hab noch nie... jemanden aus reiner Lust angeschrieben.",
+                "Ich hab noch nie... intime Gedanken über jemanden aus der Runde gehabt.",
+                "Ich hab noch nie... einen Dreier gehabt.",
+                "Ich hab noch nie... etwas aus dem Schlafzimmer mitgenommen.",
+                "Ich hab noch nie... einen Sextraum gehabt, den ich niemandem erzählt habe.",
+                "Ich hab noch nie... etwas beim Sex ausprobiert, das ich bereut habe.",
+                "Ich hab noch nie... Sex gehabt, nur um mich besser zu fühlen.",
+                "Ich hab noch nie... so getan, als hätte ich Lust – obwohl ich keine hatte.",
+                "Ich hab noch nie... jemanden benutzt – und es gewusst.",
+                "Ich hab noch nie... jemanden nur wegen Sex getroffen.",
+                "Ich hab noch nie... mit jemandem geschlafen, obwohl ich vergeben war.",
+                "Ich hab noch nie... während des Sex an die To-do-Liste gedacht.",
+                "Ich hab noch nie... beim Sex Musik laufen lassen – und den Text mitgesungen.",
+                "Ich hab noch nie... mich nach dem Sex schnell aus dem Staub gemacht.",
+                "Ich hab noch nie... im Schlaf geredet oder geschnarcht.",
+                "Ich hab noch nie... mit einem fremden Hund gesprochen, als wäre er ein Mensch.",
+                "Ich hab noch nie... einen Lachanfall an einem völlig unpassenden Ort gehabt.",
+                "Ich hab noch nie... in der Öffentlichkeit laut gesungen.",
+                "Ich hab noch nie... so sehr gelacht, dass ich fast geweint habe.",
+                "Ich hab noch nie... versehentlich etwas Peinliches gegoogelt.",
+                "Ich hab noch nie... ein Selfie gemacht und es nie jemandem gezeigt.",
+                "Ich hab noch nie... in einem Laden etwas umgeworfen und bin einfach weitergegangen.",
+                "Ich hab noch nie... einen Witz erzählt, den niemand verstanden hat.",
+                "Ich hab noch nie... bei einer falschen Person gewunken.",
+                "Ich hab noch nie... einen Einkaufswagen gerammt und so getan, als wär's Absicht.",
+                "Ich hab noch nie... eine Sprachnachricht abgehört und laut gelacht – in der U-Bahn.",
+                "Ich hab noch nie... so getan, als würde ich telefonieren, um jemanden zu meiden.",
+                "Ich hab noch nie... etwas probiert, weil es auf TikTok war – und es war furchtbar.",
+                "Ich hab noch nie... einen peinlichen Chat versehentlich weitergeleitet.",
+                "Ich hab noch nie... aus Versehen etwas doppelt geliked – aus dem Jahr 2012.",
+                "Ich hab noch nie... ein peinliches Foto von mir selbst verschickt.",
+                "Ich hab noch nie... mich bei einem Zoom-Call blamiert.",
+                "Ich hab noch nie... meinen Namen bei Starbucks falsch gesagt – aus Spaß.",
+                "Ich hab noch nie... vergessen, dass ich die Kamera noch anhatte.",
+                "Ich hab noch nie... meinen eigenen Namen in der Prüfung falsch geschrieben.",
+                "Ich hab noch nie... etwas Falsches gekocht und es trotzdem gegessen.",
+                "Ich hab noch nie... mit offenem Hosenstall durch die Gegend gelaufen.",
+                "Ich hab noch nie... meinen Wecker ignoriert und bin dann panisch aufgewacht.",
+                "Ich hab noch nie... aus dem falschen Becher getrunken.",
+                "Ich hab noch nie... versehentlich etwas in der Mikrowelle geschmolzen.",
+                "Ich hab noch nie... bei einem Online-Test gespickt – und trotzdem versagt.",
+                "Ich hab noch nie... ein Bild verschickt und direkt bereut.",
+                "Ich hab noch nie... eine Geschichte erzählt, die niemand witzig fand – außer mir.",
+                "Ich hab noch nie... mich beim Einparken beobachtet gefühlt und bin dann panisch wieder losgefahren.",
+                "Ich hab noch nie... bei \"Ich hab noch nie\" gelogen, um cool zu wirken.",
+                "Ich hab noch nie... bei der Arbeit getan, als wäre ich super beschäftigt.",
+                "Ich hab noch nie... eine Sprachnachricht zehnmal neu aufgenommen.",
+                "Ich hab noch nie... in Flip-Flops einen Sprint hingelegt – und bereut.",
+                "Ich hab noch nie... mir selbst laut zugeredet – in der Öffentlichkeit.",
+                "Ich hab noch nie... eine Freundschaft beendet, weil sie mir nicht guttat.",
+                "Ich hab noch nie... mich einsam gefühlt, obwohl Menschen um mich waren.",
+                "Ich hab noch nie... etwas Wichtiges nicht gesagt und es später bereut.",
+                "Ich hab noch nie... etwas getan, nur um anderen zu gefallen.",
+                "Ich hab noch nie... einen Traum aufgegeben.",
+                "Ich hab noch nie... einen Fehler gemacht, den ich nicht zugeben wollte.",
+                "Ich hab noch nie... aus Stolz nicht um Hilfe gebeten.",
+                "Ich hab noch nie... mich gefragt, ob ich auf dem richtigen Weg bin.",
+                "Ich hab noch nie... etwas verloren, das mir viel bedeutet hat.",
+                "Ich hab noch nie... jemandem verziehen, der es vielleicht nicht verdient hatte.",
+                "Ich hab noch nie... jemanden vermisst, den ich nicht vermissen wollte.",
+                "Ich hab noch nie... mich gefragt, was wäre wenn...",
+                "Ich hab noch nie... eine Entscheidung aus Angst getroffen.",
+                "Ich hab noch nie... meine Gefühle versteckt.",
+                "Ich hab noch nie... mich verändert, um akzeptiert zu werden.",
+                "Ich hab noch nie... gedacht, ich wäre nicht gut genug.",
+                "Ich hab noch nie... jemandem nicht gesagt, wie wichtig er*sie mir ist.",
+                "Ich hab noch nie... eine wichtige Chance nicht genutzt.",
+                "Ich hab noch nie... mich selbst enttäuscht.",
+                "Ich hab noch nie... mich in einer Gruppe fehl am Platz gefühlt.",
+                "Ich hab noch nie... geweint, ohne dass es jemand gemerkt hat.",
+                "Ich hab noch nie... einen Traum heimlich weiterverfolgt.",
+                "Ich hab noch nie... meine Meinung zurückgehalten, um Konflikt zu vermeiden.",
+                "Ich hab noch nie... meinen eigenen Wert unterschätzt.",
+                "Ich hab noch nie... etwas bereut, das ich nicht getan habe.",
+                "Ich hab noch nie... von vorne anfangen wollen.",
+                "Ich hab noch nie... etwas losgelassen, obwohl es wehgetan hat.",
+                "Ich hab noch nie... mich gefragt, wer ich eigentlich bin.",
+                "Ich hab noch nie... mich gefragt, was andere wirklich von mir denken."
+            ]
+        };
+
+        // Aussagen für das 3-Aussagen-Spiel
+        const statements = [
+            "hat heute schon gekackt.",
+            "ist dominant im Bett.",
+            "hat einen Sextraum über jemanden in der Runde gehabt.",
+            "würde für guten Sex auch eine Stunde Zug fahren.",
+            "hat schon mal Sex im Freien gehabt.",
+            "masturbiert mindestens einmal täglich.",
+            "hat schon mal beim Sex an jemand anderen gedacht.",
+            "hat einen heimlichen Fetisch.",
+            "würde in einem Porno mitspielen.",
+            "hat schon mal ein Nacktbild verschickt.",
+            "hat schon mal beim Sex geweint.",
+            "hat schon mal während des Sex laut gelacht.",
+            "hat Sexspielzeug zu Hause.",
+            "hat schon mal mit mehr als zwei Personen gleichzeitig geschlafen.",
+            "hat schon mal einen Orgasmus vorgetäuscht.",
+            "findet Dirty Talk geil.",
+            "würde Sex gegen Geld haben.",
+            "hat schon mal in einem öffentlichen WC sexuelle Handlungen vollzogen.",
+            "findet Rollenspiele im Bett spannend.",
+            "hat ein geheimes Sex-Tagebuch.",
+            "hatte schon mal Sex mit einem/einer Ex.",
+            "hat sich schon mal in jemanden aus der Runde verliebt.",
+            "hat Sex an einem sehr ungewöhnlichen Ort gehabt.",
+            "steht auf Uniformen.",
+            "hat schon mal heimlich beim Sex gefilmt.",
+            "würde mit einer berühmten Person schlafen, auch wenn vergeben.",
+            "hat schon mal Sex unter Alkoholeinfluss bereut.",
+            "hat ein Sexabenteuer im Urlaub gehabt.",
+            "würde gerne einen Dreier ausprobieren.",
+            "hat schon mal im Elternhaus der eigenen Partnerin/des Partners Sex gehabt.",
+            "hat mehr Sexspielzeug als Bücher.",
+            "hat einen OnlyFans-Account – selbst oder als Fan.",
+            "hat schon mal in einem Fetischclub gefeiert.",
+            "hat erotische Träume über Personen gleichen Geschlechts.",
+            "würde gerne mal mit jemandem aus der Runde schlafen.",
+            "hat sich beim Sex verletzt.",
+            "hatte schon mal Telefonsex.",
+            "findet Sex wichtiger als Liebe.",
+            "hat schon mal erotische Fanfiction geschrieben.",
+            "hat ein geheimes Nacktbild auf dem Handy.",
+            "würde einen Seitensprung verzeihen – wenn er heiß genug war.",
+            "hatte schon mal Sex mit jemandem, dessen Namen er/sie nicht wusste.",
+            "hat einen Lieblingsporno.",
+            "schaut regelmäßig Pornos.",
+            "hat schon mal wegen Sex fast eine Freundschaft zerstört.",
+            "findet Sex beim ersten Date okay.",
+            "würde einen One-Night-Stand wiederholen.",
+            "hat schon mal während eines Zoom-Calls masturbiert.",
+            "hatte Sex auf einer Party.",
+            "hat schon mal an Sex mit dem Chef/der Chefin gedacht.",
+            "mag Spanking oder wird gerne dominiert.",
+            "hat Sex mit Ex als \"Notlösung\" gehabt.",
+            "hat sich schon mal beim Sex aufgenommen.",
+            "ist schon mal beim Sex eingeschlafen.",
+            "hat schon mal Sex gehabt, nur um Ruhe zu haben.",
+            "ist schon mal nackt durch die Wohnung von Freunden gelaufen.",
+            "hat sich beim Nacktbild-Senden vertan.",
+            "hat schon mal eine Beziehung nur wegen dem Sex geführt.",
+            "hat schon mal Sex gehabt, ohne sich daran zu erinnern.",
+            "würde gerne Sex an einem Ort haben, den man von der Runde aus sehen kann.",
+            "ist nackt schöner als angezogen.",
+            "hat sich schon mal mit Öl, Nutella oder Schlagsahne eingerieben.",
+            "hat schon mal das falsche Loch getroffen.",
+            "hat beim Sex schon mal an das eigene Handy gedacht.",
+            "hat schon mal einen Vibrator verschenkt.",
+            "hat heimlich beim Sex gelauscht.",
+            "hat schon mal mit jemandem geschlafen, den er/sie gar nicht attraktiv fand.",
+            "würde Sex auf der Arbeit nicht ausschließen.",
+            "hat einen Crush auf einen Lehrer/eine Lehrerin gehabt.",
+            "wurde schon mal beim Sex erwischt.",
+            "isst gerne Essen vom Boden.",
+            "hat schon mal in die Hose gemacht (als Erwachsener).",
+            "redet im Schlaf.",
+            "hat schon mal eine Kerze gegessen.",
+            "hat schon mal die Dusche angepinkelt.",
+            "tanzt heimlich vor dem Spiegel.",
+            "hat Angst vor Spinnen.",
+            "hat schon mal in ein Getränk gespuckt.",
+            "hat einen unsichtbaren Freund gehabt – auch im Erwachsenenalter.",
+            "hat beim Furzen schon mal gelacht und geweint gleichzeitig.",
+            "hat ein Lied geschrieben – über den eigenen Hintern.",
+            "spricht mit Pflanzen – und erwartet Antworten.",
+            "war mal verliebt in eine Comicfigur.",
+            "hat versucht, einen Staubsauger zu küssen.",
+            "hat beim Sex aus Versehen \"Mama\" gesagt.",
+            "googelt peinliche Gesundheitsfragen.",
+            "hat schon mal ein Sandwich im Bett gebaut.",
+            "hat schon mal ins Schwimmbad gepinkelt.",
+            "isst manchmal nackt – einfach nur so.",
+            "hat sich schon mal in der eigenen Wohnung verlaufen.",
+            "hat schon mal bei einem Bewerbungsgespräch gefurzt.",
+            "hat schon mal den Wecker mit der Fernbedienung bedient.",
+            "hat mal einen Tag als Katze gelebt.",
+            "isst Pizza mit Nutella.",
+            "hat schon mal im Schlaf gesungen.",
+            "glaubt, dass das WLAN Gefühle hat.",
+            "hat einen Namen für sein/ihr Geschlechtsteil.",
+            "glaubt an Aliens – weil er/sie selbst einer ist.",
+            "führt Gespräche mit dem Kühlschrank.",
+            "isst Chips mit Gabel.",
+            "hat schon mal einen Kaktus geküsst.",
+            "hat einen Fußfetisch für Entenfüße.",
+            "glaubt, dass Einhörner echt sind.",
+            "hat ein Lieblingsklo.",
+            "hat ein peinliches Tattoo – oder will eins.",
+            "hat als Erwachsener im Einkaufswagen gesessen.",
+            "hat schon mal mit einem Spiegel gestritten.",
+            "mag den Geruch von Benzin.",
+            "hat als Kind geglaubt, mit einem Furz fliegen zu können.",
+            "hat schon mal versucht, einen Popel als Snack zu verkaufen.",
+            "hat einem Fremden eine Liebeserklärung gemacht – aus Versehen.",
+            "hat sich selbst ein Geburtstagsgeschenk gekauft und sich bedankt.",
+            "lässt Socken wochenlang liegen, damit sie \"reifen\".",
+            "hält manchmal den Atem an, um nicht zu denken.",
+            "hat sich in der Öffentlichkeit eingenässt – mit Absicht.",
+            "denkt, sein Hund versteht Sarkasmus.",
+            "hat schon mal beim Schlafen gelächelt und dabei gepupst.",
+            "glaubt heimlich, dass er/sie Magie hat.",
+            "macht Stimmen nach, wenn niemand zuhört.",
+            "hat sich mit einer Socke verlobt.",
+            "hat dem eigenen Spiegelbild einen Heiratsantrag gemacht.",
+            "versucht, Tiere telepathisch zu kontrollieren.",
+            "hat schon mal mit einem Staubsauger gespielt – auf eine komische Art.",
+            "hat eine Playlist fürs Aufräumen – mit Soundeffekten.",
+            "hat einen peinlichen TikTok-Account – geheim natürlich.",
+            "schreibt sich selbst anonyme Liebesbriefe.",
+            "hat schon mal Seife gegessen – oder es versucht.",
+            "hört heimlich Kindermusik zum Einschlafen.",
+            "hat ein Kissen mit Gesicht.",
+            "führt Streitgespräche mit dem Navi.",
+            "hat heimlich ein Haustier in einer WG versteckt.",
+            "hat einem Fremden einfach so \"Ich liebe dich\" gesagt.",
+            "findet das Geräusch von Furzen \"irgendwie meditativ\".",
+            "wurde mal von einem Vogel beleidigt (gefühlt).",
+            "spricht in Reimen, wenn niemand zuhört.",
+            "mag den Geruch von alten Büchern und neuen Schuhen.",
+            "hat noch nie jemanden geküsst.",
+            "hat Angst, nicht genug zu sein.",
+            "hat schon mal eine Freundschaft beendet, die ihm/ihr nicht gutgetan hat.",
+            "vermisst jemanden, traut sich aber nicht, es zu sagen.",
+            "hat ein geheimes Talent.",
+            "würde gerne noch einmal von vorn anfangen.",
+            "hat schon mal aus Liebe gelogen.",
+            "hat eine sehr verletzliche Seite, die kaum jemand kennt.",
+            "hat große Träume, aber Angst zu scheitern.",
+            "glaubt an das Gute im Menschen.",
+            "hat sich selbst schon mal verloren – und wiedergefunden.",
+            "hat schon mal geweint, ohne genau zu wissen warum.",
+            "hört Musik, um Emotionen zu verarbeiten.",
+            "hat ein Geheimnis, das niemand kennt.",
+            "hat schon mal jemanden gehen lassen, obwohl er/sie ihn liebte.",
+            "hat sich schon mal in der Öffentlichkeit geschämt für Gefühle.",
+            "war schon mal einsam in einer Beziehung.",
+            "hat Angst vor dem Tod – oder vor dem Leben.",
+            "hat Träume, die keiner versteht.",
+            "glaubt, dass Tiere oft bessere Freunde sind als Menschen.",
+            "hat jemanden verloren, der sehr wichtig war.",
+            "hat schon mal lange geschwiegen, obwohl Worte nötig gewesen wären.",
+            "glaubt, dass wahre Liebe selten ist.",
+            "hatte schon mal eine depressive Phase.",
+            "hat sich oft anders gefühlt als andere.",
+            "hat Angst davor, verletzt zu werden.",
+            "hat schon mal jemandem das Herz gebrochen – oder es wurde gebrochen.",
+            "hat ein Lied, das ihn/sie sofort zum Weinen bringt.",
+            "hat sich mal gewünscht, jemand anderes zu sein.",
+            "hat sich selbst vergeben – oder es versucht.",
+            "glaubt, dass Fehler dazugehören.",
+            "hat schon mal jemanden geliebt, der unerreichbar war.",
+            "hat ein Tagebuch – oder wünscht sich eines.",
+            "würde sich selbst gerne öfter in den Arm nehmen.",
+            "hat schon mal alles hinterfragt – und nichts gefunden.",
+            "hat eine Lieblingsstelle in einem Buch, die ihn/sie verändert hat.",
+            "denkt manchmal zu viel nach.",
+            "hat sich mal für andere verstellt, nur um dazuzugehören.",
+            "hat Angst, nicht geliebt zu werden.",
+            "würde gerne jemandem etwas sagen – weiß aber nicht wie.",
+            "hat ein altes Kuscheltier, das noch immer irgendwo liegt.",
+            "hört Lieder und denkt an vergangene Zeiten.",
+            "würde gerne einmal \"Ich liebe dich\" sagen, traut sich aber nicht.",
+            "hat ein gebrochenes Herz versteckt hinter einem Lächeln.",
+            "würde alles für echte Freundschaft tun.",
+            "hat das Gefühl, sich ständig beweisen zu müssen.",
+            "hatte schon mal das Gefühl, alles falsch zu machen.",
+            "hat sich schon mal einsamer gefühlt unter vielen Menschen.",
+            "glaubt an zweite Chancen – manchmal zu sehr.",
+            "würde gerne öfter \"Nein\" sagen.",
+            "hat manchmal das Gefühl, nicht zu genügen."
+        ];
+
+        let currentCategory = '';
+        let usedQuestions = {
+            wahrheit: [],
+            "wuerdest-du": [],
+            "ich-hab-nie": []
+        };
+
+        // Variablen für das 3-Aussagen-Spiel
+        let playerNames = [];
+        let currentPlayerName = '';
+        let currentStatements = [];
+        let usedStatements = [];
+
+        function getQuestion(category) {
+            const questionDisplay = document.getElementById('questionDisplay');
+            currentCategory = category;
+            
+            // Verfügbare Fragen für diese Kategorie
+            const availableQuestions = questions[category].filter((q, index) => 
+                !usedQuestions[category].includes(index)
+            );
+            
+            // Wenn alle Fragen verwendet wurden, zurücksetzen
+            if (availableQuestions.length === 0) {
+                usedQuestions[category] = [];
+                availableQuestions.push(...questions[category]);
+            }
+            
+            // Zufällige Frage auswählen
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            const selectedQuestion = availableQuestions[randomIndex];
+            
+            // Index der ursprünglichen Frage finden und als verwendet markieren
+            const originalIndex = questions[category].indexOf(selectedQuestion);
+            usedQuestions[category].push(originalIndex);
+            
+            // Animation und Frage anzeigen
+            questionDisplay.classList.add('pulse');
+            
+            setTimeout(() => {
+                questionDisplay.textContent = selectedQuestion;
+                questionDisplay.classList.remove('pulse');
+            }, 250);
+        }
+
+        // Funktionen für das 3-Aussagen-Spiel
+        function showStatements() {
+            document.getElementById('statementsModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('statementsModal').style.display = 'none';
+            resetStatementsGame();
+        }
+
+        function startStatementsGame() {
+            const namesInput = document.getElementById('playerNames');
+            const namesText = namesInput.value.trim();
+            
+            if (!namesText) {
+                alert('Bitte gib mindestens einen Namen ein!');
+                return;
+            }
+            
+            // Namen aus dem Text extrahieren und bereinigen
+            playerNames = namesText.split(',')
+                .map(name => name.trim())
+                .filter(name => name.length > 0);
+            
+            if (playerNames.length === 0) {
+                alert('Bitte gib gültige Namen ein!');
+                return;
+            }
+            
+            // Verwendete Aussagen zurücksetzen
+            usedStatements = [];
+            
+            // Display umschalten und erste Aussagen generieren
+            document.querySelector('.input-section').style.display = 'none';
+            document.getElementById('statementsDisplay').style.display = 'block';
+            
+            generateNextStatements();
+        }
+
+        function generateNextStatements() {
+            // Zufälligen Spieler auswählen
+            const randomPlayerIndex = Math.floor(Math.random() * playerNames.length);
+            currentPlayerName = playerNames[randomPlayerIndex];
+            
+            // Verfügbare Aussagen ermitteln
+            const availableStatements = statements.filter((statement, index) => 
+                !usedStatements.includes(index)
+            );
+            
+            // Wenn weniger als 3 Aussagen verfügbar, zurücksetzen
+            if (availableStatements.length < 3) {
+                usedStatements = [];
+                availableStatements.push(...statements);
+            }
+            
+            // 3 zufällige Aussagen auswählen
+            const shuffled = [...availableStatements].sort(() => 0.5 - Math.random());
+            currentStatements = shuffled.slice(0, 3);
+            
+            // Indizes der verwendeten Aussagen markieren
+            currentStatements.forEach(statement => {
+                const index = statements.indexOf(statement);
+                if (!usedStatements.includes(index)) {
+                    usedStatements.push(index);
+                }
+            });
+            
+            // Aussagen anzeigen
+            document.getElementById('playerTitle').textContent = `3 Aussagen über ${currentPlayerName}:`;
+            document.getElementById('statement1').textContent = `${currentPlayerName} ${currentStatements[0]}`;
+            document.getElementById('statement2').textContent = `${currentPlayerName} ${currentStatements[1]}`;
+            document.getElementById('statement3').textContent = `${currentPlayerName} ${currentStatements[2]}`;
+        }
+
+        function resetStatementsGame() {
+            document.querySelector('.input-section').style.display = 'block';
+            document.getElementById('statementsDisplay').style.display = 'none';
+            document.getElementById('playerNames').value = '';
+            playerNames = [];
+            currentPlayerName = '';
+            currentStatements = [];
+            usedStatements = [];
+        }
+
+        // Tastatur-Event für Spacebar
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space' && currentCategory) {
+                event.preventDefault();
+                getQuestion(currentCategory);
+            }
+        });
+
+        // Touch-Event für mobile Geräte
+        let touchStartY = 0;
+        document.addEventListener('touchstart', function(event) {
+            touchStartY = event.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(event) {
+            const touchEndY = event.changedTouches[0].clientY;
+            const touchDifference = touchStartY - touchEndY;
+            
+            // Swipe nach oben für neue Frage
+            if (touchDifference > 50 && currentCategory) {
+                getQuestion(currentCategory);
+            }
+        });
+
+        // Modal schließen bei Klick außerhalb
+        window.onclick = function(event) {
+            const modal = document.getElementById('statementsModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
